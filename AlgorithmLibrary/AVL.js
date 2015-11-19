@@ -82,7 +82,7 @@ BST.prototype.AddTree =  function(seed, offset)
     this.commands = [];
     //this.cmd("SetText", 0, "TotalNodes "+ totalNodes);
     var i = Math.seededRandom(10,100)%10+10;
-    alert(i);
+    //alert(i);
     while(i > 0)
     {
         //var value = (i*i+offset)%prime;
