@@ -1,14 +1,18 @@
 var BSTUtils = {
     inputNumber : function () {
-        var num = prompt("Enter value", 42);
-        if (num == null)return BSTUtils.inputNumber();
-        else return num;
+        var num = prompt("Enter value", 45);
+        //alert(num == null);
+        // if (num == null)return BSTUtils.inputNumber();
+        // else return num;
+
+        return num;
     },
 
     inputNumber : function(str) {
-        var num = prompt(str,42);
-        if(num==null)return BSTUtils.inputNumber(str);
-        else return num;
+        var num = prompt("Enter value",43);
+        //if(num==null)return BSTUtils.inputNumber(str);
+        //else return num;
+        return num;
     },
 
     clearCanvas : function() {
@@ -16,7 +20,7 @@ var BSTUtils = {
     },
 
     redrawImage : function() {
-        console.log(currentAlg.commands);
+        //console.log(currentAlg.commands);
         currentAlg.animationManager.StartNewAnimation(currentAlg.commands);
         currentAlg.animationManager.skipForward();
         currentAlg.animationManager.clearHistory();
