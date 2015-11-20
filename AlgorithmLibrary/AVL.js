@@ -74,7 +74,7 @@ BST.prototype.init = function(am, w, h)
     this.AddTree(29, 1);
 
     this.initCommands = this.commands;
-    console.log(this.commands);
+    //console.log(this.commands);
     this.highlightNode(this.treeRoot.graphicID);
 
     this.animationManager.StartNewAnimation(this.commands);
