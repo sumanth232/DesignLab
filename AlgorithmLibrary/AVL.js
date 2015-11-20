@@ -75,6 +75,7 @@ BST.prototype.init = function(am, w, h)
 
     this.initCommands = this.commands;
     console.log(this.commands);
+    this.highlightNode(this.treeRoot.graphicID);
 
     this.animationManager.StartNewAnimation(this.commands);
     this.animationManager.skipForward();
@@ -82,6 +83,8 @@ BST.prototype.init = function(am, w, h)
     this.deleteElem = false;
     this.numberToReplace = -1;
     this.markednode = null;
+
+
 }
 
 
@@ -1129,9 +1132,9 @@ BST.prototype.insertElement_initialise = function(insertedValue)
     if (this.treeRoot == null)
     {
         this.cmd("CreateCircle", this.nextIndex, insertedValue,  this.startingX, BST.STARTING_Y);
-        this.cmd("SetForegroundColor", this.nextIndex, BST.FOREGROUND_COLOR);
-        this.cmd("SetBackgroundColor", this.nextIndex, BST.BACKGROUND_COLOR);
-        this.cmd("Step");
+        //this.cmd("SetForegroundColor", this.nextIndex, BST.FOREGROUND_COLOR);
+        //this.cmd("SetBackgroundColor", this.nextIndex, BST.BACKGROUND_COLOR);
+        //this.cmd("Step");
         this.treeRoot = new BSTNode(insertedValue, this.nextIndex, this.startingX, BST.STARTING_Y);
         this.nextIndex += 1;
     }
