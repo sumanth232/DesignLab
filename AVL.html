@@ -2,7 +2,7 @@
 <head>
 
     <title>
-        Binary Search Tree Visualization
+        AVL Tree Visualization
     </title>
 
     <!-- css sheet for how the page is laid out -->
@@ -50,7 +50,7 @@
 <div id = "container">
 
     <div id="header">
-        <h1>Binary Search Tree</h1>
+        <h1>AVL Tree</h1>
     </div>
 
 
@@ -163,7 +163,8 @@
                         function insertElementBST(dir){
 
                             var numberToInsert = BSTUtils.inputNumber();
-                            currentAlg.addStep("I"+((dir)?"R":"L")+numberToInsert);
+                            if(numberToInsert == null) return;
+                            currentAlg.addStep("Ins"+((dir)?"R":"L")+numberToInsert);
                             BSTUtils.clearCanvas();
 
                             var nodeInserted = currentAlg.insertToLeaf(numberToInsert,dir, true);
@@ -184,7 +185,7 @@
                     <script>
                         function RotateLeftBST(){
 
-                            currentAlg.addStep("RLeft");
+                            currentAlg.addStep("RotateLeft");
                             BSTUtils.clearCanvas();
                             currentAlg.RotateLeft();
                             BSTUtils.redrawImage();
@@ -198,7 +199,7 @@
                     <script>
                         function RotateRightBST(){
 
-                            currentAlg.addStep("RLeft");
+                            currentAlg.addStep("RotateRight");
                             BSTUtils.clearCanvas();
                             currentAlg.RotateRight();
                             BSTUtils.redrawImage();
@@ -225,8 +226,14 @@
                     <script>
                         function deleteElementBST(){
                             currentAlg.addStep("D");
-                            var replacementNode = null;
+                            var replacementNode = currentAlg.markednode;
                             document.getElementById("menuSimple").style.display = "none";
+
+                            if(replacementNode == null) {
+                                alert("Using \"Mark\" button, mark Inorder successor or predecessor node to replace the highlighted node");
+                                return;
+                            }
+
                             /*if(!(currentHighlightNode.left==null && currentHighlightNode.right==null)) {
                                 currentAlg.deleteElem = true;
                                 alert("Select node to replace deleted node");
@@ -237,7 +244,7 @@
 
                             var temp = currentHighlightNode;
                             while(currentAlg.moveToParent());
-                            var replacementNode = currentAlg.markednode;
+
                             var deletedElement = currentAlg.deleteCurrentHighlightedNode(temp, replacementNode);
                             //alert("del"+deletedElement.graphicID);
                             if(BSTUtils.validate(deletedElement))
@@ -245,6 +252,8 @@
                             currentAlg.animationManager.StartNewAnimation(currentAlg.commands);
                             currentAlg.animationManager.skipForward();
                             currentAlg.animationManager.clearHistory();
+
+                            currentAlg.markednode = null;
 
                         }
 
@@ -339,18 +348,18 @@
     <div id = "insert_questions" style="display: none">
         <b><p>Questions on Insert Operation</p></b>
         <form action="">
-            <input type="radio" name="radio1" value="i1" checked="checked">Insert 44 to the binary search tree.<br>
+            <input type="radio" name="radio1" value="i1" checked="checked">Insert 44 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri1" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
 
-            <input type="radio" name="radio1" value="i2">Insert 56 to the binary search tree.<br>
+            <input type="radio" name="radio1" value="i2">Insert 56 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri2" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
-            <input type="radio" name="radio1" value="i3">Insert 68 to the binary search tree.<br>
+            <input type="radio" name="radio1" value="i3">Insert 68 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri3" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
@@ -409,18 +418,18 @@
     <div id = "misc_questions" style="display: none">
         <b><p>Miscellaneous questions</p></b>
         <form action="">
-            <input type="radio" name="radio3" value="m1" checked="checked">Do the inorder traversal of tree.<br>
+            <input type="radio" name="radio3" value="m1" checked="checked">Do the inorder traversal of AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answerm1" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
 
-            <input type="radio" name="radio3" value="m2">Do the preorder traversal of tree.<br>
+            <input type="radio" name="radio3" value="m2">Do the preorder traversal of AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answerm2" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
-            <input type="radio" name="radio3" value="m3">Do the postorder traversal of tree.<br>
+            <input type="radio" name="radio3" value="m3">Do the postorder traversal of AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answerm3" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
