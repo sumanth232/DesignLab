@@ -55,6 +55,10 @@ Math.seededRandom = function(min, max){
 
 }
 
+Math.seededRandom2 = function(min, max) {
+    return parseInt(Math.random(1200) * (max-min)) + min;
+}
+
 
 BST.prototype.init = function(am, w, h)
 {
@@ -94,12 +98,12 @@ BST.prototype.AddTree =  function(seed, offset)
     this.values = []
     this.commands = [];
     //this.cmd("SetText", 0, "TotalNodes "+ totalNodes);
-    var i = Math.seededRandom(10,100)%10 + 10;
+    var i = Math.seededRandom2(10,100)%10 + 10;
     //alert(i);
     while(i > 0)
     {
         //var value = (i*i+offset)%prime;
-        var value = Math.seededRandom(10,100);
+        var value = Math.seededRandom2(10,100);
         //var value = RandomInt(1, 100);
         this.values.push(value);
         this.insertElement_initialise(value);
