@@ -1072,8 +1072,10 @@ function addEventsToNode(animManag){
                     //alert("hey"+currentAlg.deleteElem);
                     if(currentAlg.deleteElem){
                         currentAlg.numberToReplace = element.data;
+                        //currentAlg.markednode = element;
                         //alert(currentAlg.numberToReplace);
                         afterNodeSelected();
+                        //deleteElementBST(element);
                         currentAlg.deleteElem = false;
                     }
                     else if(currentHighlightNode.graphicID==id){

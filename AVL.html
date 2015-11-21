@@ -222,15 +222,16 @@
 
                 <tr><td>
 
-                    <button id="Delete" href onclick="deleteElementBST();" style="width:100%">Delete Present Node</button>
+                    <button id="Delete" href onclick="deleteElementBST(null);" style="width:100%">Delete Present Node</button>
                     <script>
-                        function deleteElementBST(){
+                        function deleteElementBST(replacementNode){
+                            currentAlg.deleteElem = true;
                             currentAlg.addStep("D");
-                            var replacementNode = currentAlg.markednode;
+//                            var replacementNode = currentAlg.markednode;
                             document.getElementById("menuSimple").style.display = "none";
 
                             if(replacementNode == null) {
-                                alert("Using \"Mark\" button, mark Inorder successor or predecessor node to replace the highlighted node");
+                                alert("Click on a node to replace this node.");
                                 return;
                             }
 
@@ -257,7 +258,7 @@
 
                         }
 
-                        function dafterNodeSelected(){
+                        function afterNodeSelected(){
                             var replacementNode = null;
 //                                    do {
 //                                        var numberToReplace = BSTUtils.inputNumber("Enter node number to replace next deleted node(Enter -1 for null value)");
