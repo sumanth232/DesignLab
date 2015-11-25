@@ -60,6 +60,7 @@ Math.seededRandom2 = function(min, max) {
 }
 
 
+
 BST.prototype.init = function(am, w, h)
 {
     this.answers = {};
@@ -88,6 +89,18 @@ BST.prototype.init = function(am, w, h)
     this.numberToReplace = -1;
     this.markednode = null;
 
+    this.markedElements = new Array();
+
+
+    //questionDS = currentAlg;
+    //questionDS = jQuery.extend(true, {}, this.treeRoot);
+    //questionDS = BSTUtils.cloneTree(this.treeRoot);
+
+    //this.treeRoot.left.data = 33;
+
+    //var eq = questionDS.left.data == this.treeRoot.left.data;
+    //alert(eq);
+
 
 }
 
@@ -98,12 +111,14 @@ BST.prototype.AddTree =  function(seed, offset)
     this.values = []
     this.commands = [];
     //this.cmd("SetText", 0, "TotalNodes "+ totalNodes);
-    var i = Math.seededRandom2(10,100)%10 + 10;
+    var i;
+    if(Scheme.getSchemeVal() == 3) i = Math.seededRandom(10,100)%10 ;
+    else i = Math.seededRandom(10,100)%10 + 10;
     //alert(i);
     while(i > 0)
     {
         //var value = (i*i+offset)%prime;
-        var value = Math.seededRandom2(10,100);
+        var value = Math.seededRandom(10,100);
         //var value = RandomInt(1, 100);
         this.values.push(value);
         this.insertElement_initialise(value);
@@ -112,6 +127,11 @@ BST.prototype.AddTree =  function(seed, offset)
     // alert(this.values);
     return this.commands;
     //this.animationManager.StartNewAnimation(allcommands);
+
+
+    /*var ar = new Array(80,96);
+    for(var i=0; i<ar.length; i++) this.insertElement_initialise(ar[i]);*/
+
 }
 
 BST.prototype.reset = function()
@@ -574,24 +594,25 @@ function RandomInt(min, max)
 {
     return Math.floor(Math.random() * (max - min)) + min;
 }
+//function BSTNode(val, id, initialX, initialY)
+//{
+//    this.data = val;
+//    this.x = initialX;
+//    this.y = initialY;
+//    this.graphicID = id;
+//    this.left = null;
+//    this.right = null;
+//    this.parent = null;
+//}
+
+
 function BSTNode(val, id, initialX, initialY)
 {
+    //console.log(val + ":" + id + ":"  + ":" + initialX + ":" + initialY);
     this.data = val;
     this.x = initialX;
     this.y = initialY;
-    this.graphicID = id;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
-}
-
-
-function BSTNode(val, id, hid, initialX, initialY)
-{
-    this.data = val;
-    this.x = initialX;
-    this.y = initialY;
-    this.heightLabelID= hid;
+    //this.heightLabelID= hid;
     this.height = 1;
 
     this.graphicID = id;
@@ -887,6 +908,10 @@ BST.prototype.deleteCurrentHighlightedNode = function(node, replacementNode)
     }
     else if(node.left==null || node.right==null) {
         if(replacementNode==null)return ;
+        /*if(replacementNode == null) {
+            alert("Click on a node to replace this node.");
+            return;
+        }*/
         var nchild = (node.left==null)?node.right:node.left;
         if(node.parent!=null)this.cmd("Disconnect", node.parent.graphicID, node.graphicID);
         this.cmd("Delete", node.graphicID);
@@ -921,6 +946,10 @@ BST.prototype.deleteCurrentHighlightedNode = function(node, replacementNode)
     }
     else {  //node has two children
         if(replacementNode==null)return ;
+        /*if(replacementNode == null) {
+            alert("Click on a node to replace this node.");
+            return;
+        }*/
         if(node.parent!=null)this.cmd("Disconnect", node.parent.graphicID, node.graphicID);
         this.cmd("Delete", node.graphicID);
         this.cmd("Step");
@@ -992,21 +1021,283 @@ BST.prototype.moveReplacementNode = function(replacementNode)
 }
 
 BST.prototype.addStep = function(str){
-    document.getElementById(BSTUtils.getAnswerID()).value = document.getElementById(BSTUtils.getAnswerID()).value+" "+str;
+    document.getElementById(BSTUtils.getAnswerID()).value = document.getElementById(BSTUtils.getAnswerID()).value+str + ", ";
 }
 
 
 BST.prototype.mark = function(){
+    //this.markedElements.push(currentHighlightNode.data);
+
     this.markednode = currentHighlightNode;
     currentAlg.addStep(currentHighlightNode.data);
     document.getElementById("menuSimple").style.display = "none";
 }
 
+function preorder(root) {
+    if(root == null) return;
+    console.log(root.data + " ");
+    preorder(root.left);
+    preorder(root.right);
+}
+
 BST.prototype.submitAnswer = function(){
+    //console.log("AAA : " +questionDS.right.right.data);
+    var questionID = BSTUtils.getQuestionID();
+
     this.answers[BSTUtils.getQuestionID()] = document.getElementById(BSTUtils.getAnswerID()).value;
+
+    var currentTree = BSTUtils.cloneTree(currentAlg.treeRoot);
+
+    var givenTree = BSTUtils.cloneTree(questionDS);
+    var correctAnswer;
+
+    switch (questionID) {
+        case "i1":
+            console.log("Evaluating Q1 with id 'i1'");
+            givenTree = insertElement_evaluation(givenTree, 82);
+            correctAnswer = givenTree;
+
+            if(BSTUtils.isEqual(currentTree, correctAnswer)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+        case "i2":
+            console.log("Evaluating Q2 with id 'i2'");
+            givenTree = insertElement_evaluation(givenTree, 82);
+            givenTree = insertElement_evaluation(givenTree, 92);
+            correctAnswer = givenTree;
+
+            if(BSTUtils.isEqual(currentTree, correctAnswer)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+        case "i3":
+            console.log("Evaluating Q3 with id 'i3'");
+            var elems = new Array(82, 92, 60, 64, 70, 75);
+            for(var i=0; i<elems.length; i++) {
+                givenTree = insertElement_evaluation(givenTree, elems[i]);
+            }
+            correctAnswer = givenTree;
+
+            if(BSTUtils.isEqual(currentTree, correctAnswer)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+        case "i4":
+            console.log("Evaluating Q4 with id 'i4'");
+            var elems = new Array(82, 92, 60, 64, 70, 75, 68);
+            for(var i=0; i<elems.length; i++) {
+                givenTree = insertElement_evaluation(givenTree, elems[i]);
+            }
+            correctAnswer = givenTree;
+
+            if(BSTUtils.isEqual(currentTree, correctAnswer)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+        case "i5":
+            console.log("Evaluating Q5 with id 'i5'");
+            if(currentAlg.markednode.data == 70) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+        case "i6":
+            if(document.getElementById(BSTUtils.getAnswerID()).value == "4") alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+
+
+        case "d1":
+            var givenInorder = new Array(), currentInorder = new Array();
+            BSTUtils.inorderArray(givenTree,givenInorder);
+            BSTUtils.inorderArray(currentTree,currentInorder);
+
+            givenInorder.splice(givenInorder.indexOf(47), 1);
+            correctAnswer = givenInorder;
+
+            if(BSTUtils.isEqual_Arrays(currentInorder, correctAnswer)) {
+                if(!BSTUtils.isBalanced(currentTree)) alert("Wrong Answer - Tree is not balanced");
+                else alert("Correct !!!");
+            }
+            else alert("Wrong Answer");
+
+            break;
+
+        case "d2":
+            // deleting 5th largest element in AVL tree
+            var givenInorder = new Array(), currentInorder = new Array();
+            BSTUtils.inorderArray(givenTree,givenInorder);
+            BSTUtils.inorderArray(currentTree,currentInorder);
+
+            givenInorder.splice(givenInorder.indexOf(47), 1);
+            givenInorder.splice(4, 1);
+            correctAnswer = givenInorder;
+
+            if(BSTUtils.isEqual_Arrays(currentInorder, correctAnswer)) {
+                if(!BSTUtils.isBalanced(currentTree)) alert("Wrong Answer - Tree is not balanced");
+                else alert("Correct !!!");
+            }
+            else alert("Wrong Answer");
+
+            break;
+
+        case "d3":
+            // What is the height of the newly formed tree?
+            if(document.getElementById(BSTUtils.getAnswerID()).value.trim() == "4") alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+
+        case "d4":
+            // Delete the leaves in the left subtree of the root.
+            var givenInorder = new Array(), currentInorder = new Array();
+            BSTUtils.inorderArray(givenTree,givenInorder);
+            BSTUtils.inorderArray(currentTree,currentInorder);
+
+            givenInorder.splice(givenInorder.indexOf(47), 1);
+            givenInorder.splice(4, 1);
+            //givenInorder.splice(givenInorder.indexOf(80), 1);
+
+            givenInorder.splice(givenInorder.indexOf(15), 1);
+            givenInorder.splice(givenInorder.indexOf(27), 1);
+
+            correctAnswer = givenInorder;
+
+            if(BSTUtils.isEqual_Arrays(currentInorder, correctAnswer)) {
+                if(!BSTUtils.isBalanced(currentTree)) alert("Wrong Answer - Tree is not balanced");
+                else alert("Correct !!!");
+            }
+            else alert("Wrong Answer");
+
+            break;
+
+        case "d5":
+            // What is the height of the newly formed tree?
+            if(document.getElementById(BSTUtils.getAnswerID()).value.trim() == "3") alert("Correct !!!");
+            else {
+                //var input = document.getElementById(BSTUtils.getAnswerID()).value;
+                alert("Wrong Answer");
+            }
+            break;
+
+        case "m1":
+            // Do the inorder traversal of AVL tree
+            var inputorder = new Array();
+            var input = document.getElementById(BSTUtils.getAnswerID()).value.trim();
+            var elems = input.split(",");
+
+            /*for(var i=0; i<elems.length; i++) {
+                console.log(elems[i]);
+            }*/
+
+            for(var i=0; i<elems.length; i++) {
+                var e = elems[i].trim();
+                if((e != "") && (!isNaN(e))) inputorder.push(parseInt(e));
+            }
+
+            /*for(var i=0; i<inputInorder.length; i++) {
+                console.log(inputInorder[i]);
+            }*/
+
+            var givenorder = new Array();
+            BSTUtils.inorderArray(givenTree,givenorder);
+            if(BSTUtils.isEqual_Arrays(inputorder, givenorder)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+
+        case "m2":
+            // Do the preorder traversal of AVL tree
+            var inputorder = new Array();
+            var input = document.getElementById(BSTUtils.getAnswerID()).value.trim();
+            var elems = input.split(",");
+
+            /*for(var i=0; i<elems.length; i++) {
+             console.log(elems[i]);
+             }*/
+
+            for(var i=0; i<elems.length; i++) {
+                var e = elems[i].trim();
+                if((e != "") && (!isNaN(e))) inputorder.push(parseInt(e));
+            }
+
+            /*for(var i=0; i<inputInorder.length; i++) {
+             console.log(inputInorder[i]);
+             }*/
+
+            var givenorder = new Array();
+            BSTUtils.preorderArray(givenTree,givenorder);
+            if(BSTUtils.isEqual_Arrays(inputorder, givenorder)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+
+        case "m3":
+            // Do the postorder traversal of AVL tree
+            var inputorder = new Array();
+            var input = document.getElementById(BSTUtils.getAnswerID()).value.trim();
+            var elems = input.split(",");
+
+            /*for(var i=0; i<elems.length; i++) {
+             console.log(elems[i]);
+             }*/
+
+            for(var i=0; i<elems.length; i++) {
+                var e = elems[i].trim();
+                if((e != "") && (!isNaN(e))) inputorder.push(parseInt(e));
+            }
+
+            /*for(var i=0; i<inputInorder.length; i++) {
+             console.log(inputInorder[i]);
+             }*/
+
+            var givenorder = new Array();
+            BSTUtils.postorderArray(givenTree,givenorder);
+            if(BSTUtils.isEqual_Arrays(inputorder, givenorder)) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+
+        case "m4":
+            // Mark the lowest common ancestor of the first two leaf nodes(from left)?
+            var inputorder = new Array();
+            var input = document.getElementById(BSTUtils.getAnswerID()).value.trim();
+            var elems = input.split(",");
+
+
+            for(var i=0; i<elems.length; i++) {
+                var e = elems[i].trim();
+                if((e != "") && (!isNaN(e))) inputorder.push(parseInt(e));
+            }
+
+
+            if(inputorder.length == 1 && inputorder[0] == 28) alert("Correct !!!");
+            else {
+                alert("Wrong Answer");
+            }
+            break;
+
+        default :
+            alert("questionID " + questionID + " not found in evaluation");
+            break;
+    }
+
+
 }
 
 BST.prototype.resetAnswer = function(){
+
     this.answers[BSTUtils.getQuestionID()] = document.getElementById(BSTUtils.getAnswerID()).value = '';
 }
 
@@ -1028,6 +1319,10 @@ var currentAlg;
 var currentHighlightNode;
 var initCommands;
 
+var initialDS;
+
+var questionDS;
+
 function init()
 {
     var animManag = initCanvas();
@@ -1039,6 +1334,11 @@ function init()
 
     addEventsToNode(animManag);
     insertNodesToActionListener();
+
+    initialDS = currentAlg;
+
+    questionDS = BSTUtils.cloneTree(currentAlg.treeRoot);
+
 }
 
 function addEventsToNode(animManag){
@@ -1130,14 +1430,15 @@ function deleteNodeFromActionListener(node){
 // AVL specific code to produce the initial AVL tree
 
 
-BST.prototype.insertElement_initialise = function(insertedValue)
+BST.prototype.insertElement_initialise = function(insertedValue, visualise )
 {
+    visualise = typeof visualise !== 'undefined' ? visualise : true;
     //this.cmd("SetText", 0, "Inserting "+insertedValue);
     //this.nextIndex++;
 
     if (this.treeRoot == null)
     {
-        this.cmd("CreateCircle", this.nextIndex, insertedValue,  this.startingX, BST.STARTING_Y);
+        if(visualise) this.cmd("CreateCircle", this.nextIndex, insertedValue,  this.startingX, BST.STARTING_Y);
         //this.cmd("SetForegroundColor", this.nextIndex, BST.FOREGROUND_COLOR);
         //this.cmd("SetBackgroundColor", this.nextIndex, BST.BACKGROUND_COLOR);
         //this.cmd("Step");
@@ -1146,76 +1447,86 @@ BST.prototype.insertElement_initialise = function(insertedValue)
     }
     else
     {
-        this.cmd("CreateCircle", this.nextIndex, insertedValue, 100, 100);
+        if(visualise) this.cmd("CreateCircle", this.nextIndex, insertedValue, 100, 100);
         //this.cmd("SetForegroundColor", this.nextIndex, BST.FOREGROUND_COLOR);
         //this.cmd("SetBackgroundColor", this.nextIndex, BST.BACKGROUND_COLOR);
-        this.cmd("Step");
+        if(visualise) this.cmd("Step");
         var insertElem = new BSTNode(insertedValue, this.nextIndex, 100, 100);
 
         this.nextIndex += 1;
-        this.insert_initialise(insertElem, this.treeRoot)
+        this.insert_initialise(insertElem, this.treeRoot, visualise);
         this.resizeTree();
     }
     this.highlightID = this.nextIndex;
     return this.commands;
 }
 
-BST.prototype.insert_initialise = function(elem, tree)
+function insertElement_evaluation(tree, insertedValue )
 {
-    this.cmd("SetHighlight", tree.graphicID, 1);
-    this.cmd("SetHighlight", elem.graphicID, 1);
+
+    if (tree == null)
+    {
+        tree = new BSTNode(insertedValue, this.nextIndex, this.startingX, BST.STARTING_Y);
+    }
+    else
+    {
+        var insertElem = new BSTNode(insertedValue, 0, 100, 100);
+
+        console.log("Inserting -> tree.data - " + tree.data + " , elem.data - " + insertElem.data);
+        tree = insert_initialise(insertElem, tree);
+    }
+    //this.highlightID = this.nextIndex;
+    //return this.commands;
+    return tree;
+}
+
+BST.prototype.insert_initialise = function(elem, tree, visualise)
+{
+    visualise = typeof visualise !== 'undefined' ? visualise : true;
+
+    if(visualise) this.cmd("SetHighlight", tree.graphicID, 1);
+    if(visualise) this.cmd("SetHighlight", elem.graphicID, 1);
 
 
-    this.cmd("Step");
-    this.cmd("SetHighlight", tree.graphicID , 0);
-    this.cmd("SetHighlight", elem.graphicID, 0);
+    if(visualise) this.cmd("Step");
+    if(visualise) this.cmd("SetHighlight", tree.graphicID , 0);
+    if(visualise) this.cmd("SetHighlight", elem.graphicID, 0);
 
     if (elem.data < tree.data)
     {
         if (tree.left == null)
         {
+            console.log("came left : " + elem.data);
             tree.left=elem;
             elem.parent = tree;
-            this.cmd("Connect", tree.graphicID, elem.graphicID, BST.LINK_COLOR);
+            if(visualise) this.cmd("Connect", tree.graphicID, elem.graphicID, BST.LINK_COLOR);
 
             if (tree.height < tree.left.height + 1)
             {
                 tree.height = tree.left.height + 1
-                //this.cmd("SetText",tree.heightLabelID,tree.height);
-                //this.cmd("SetText",  0, "Adjusting height after recursive call");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HIGHLIGHT_LABEL_COLOR);
-                //this.cmd("Step");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HEIGHT_LABEL_COLOR);
             }
+
+            //console.log("tree.left.data : " + tree.data);
         }
         else
         {
             //this.cmd("CreateHighlightCircle", this.highlightID, BST.HIGHLIGHT_CIRCLE_COLOR, tree.x, tree.y);
-            this.cmd("Move", this.highlightID, tree.left.x, tree.left.y);
-            this.cmd("Step");
+            if(visualise) this.cmd("Move", this.highlightID, tree.left.x, tree.left.y);
+            if(visualise) this.cmd("Step");
             //this.cmd("Delete", this.highlightID);
-            this.insert_initialise(elem, tree.left);
+            this.insert_initialise(elem, tree.left, visualise);
 
 
             if (tree.height < tree.left.height + 1)
             {
-                tree.height = tree.left.height + 1
-                //this.cmd("SetText",tree.heightLabelID,tree.height);
-                //this.cmd("SetText",  0, "Adjusting height after recursive call");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HIGHLIGHT_LABEL_COLOR);
-                //this.cmd("Step");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HEIGHT_LABEL_COLOR);
-
+                tree.height = tree.left.height + 1;
             }
             if ((tree.right != null && tree.left.height > tree.right.height + 1) ||
                 (tree.right == null && tree.left.height > 1))
             {
                 if (elem.data < tree.left.data)
                 {
-                    //alert(elem.data + " " + tree.left.data);
                     this.singleRotateRight(tree);
-
-                    //alert("done");
                 }
                 else
                 {
@@ -1226,7 +1537,7 @@ BST.prototype.insert_initialise = function(elem, tree)
     }
     else if (elem.data == tree.data)
     {
-        this.cmd("Delete", elem.graphicID);
+        if(visualise) this.cmd("Delete", elem.graphicID);
     }
     else
     {
@@ -1234,47 +1545,36 @@ BST.prototype.insert_initialise = function(elem, tree)
         {
             tree.right=elem;
             elem.parent = tree;
-            this.cmd("Connect", tree.graphicID, elem.graphicID, BST.LINK_COLOR);
+            if(visualise) this.cmd("Connect", tree.graphicID, elem.graphicID, BST.LINK_COLOR);
             elem.x = tree.x + BST.WIDTH_DELTA/2;
             elem.y = tree.y + BST.HEIGHT_DELTA
-            this.cmd("Move", elem.graphicID, elem.x, elem.y);
+            if(visualise) this.cmd("Move", elem.graphicID, elem.x, elem.y);
 
 
 
 
-
-            this.resizeTree();
+            if(visualise) this.resizeTree();
 
 
             if (tree.height < tree.right.height + 1)
             {
-                tree.height = tree.right.height + 1
-                //this.cmd("SetText",tree.heightLabelID,tree.height);
-                //this.cmd("SetText",   0, "Adjusting height after recursive call");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HIGHLIGHT_LABEL_COLOR);
-                //this.cmd("Step");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HEIGHT_LABEL_COLOR);
+                tree.height = tree.right.height + 1;
             }
 
         }
         else
         {
-            this.cmd("Move", this.highlightID, tree.right.x, tree.right.y);
-            this.cmd("Step");
+            if(visualise) this.cmd("Move", this.highlightID, tree.right.x, tree.right.y);
+            if(visualise) this.cmd("Step");
             //this.cmd("Delete", this.highlightID);
-            this.insert_initialise(elem, tree.right);
+            //console.log("came right : " + elem.data);
+            this.insert_initialise(elem, tree.right, visualise);
 
 
 
             if (tree.height < tree.right.height + 1)
             {
-                tree.height = tree.right.height + 1
-                //this.cmd("SetText",tree.heightLabelID,tree.height);
-                //this.cmd("SetText",  0, "Adjusting height after recursive call");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HIGHLIGHT_LABEL_COLOR);
-                //this.cmd("Step");
-                //this.cmd("SetForegroundColor", tree.heightLabelID, BST.HEIGHT_LABEL_COLOR);
-
+                tree.height = tree.right.height + 1;
 
             }
             if ((tree.left != null && tree.right.height > tree.left.height + 1) ||
@@ -1287,16 +1587,129 @@ BST.prototype.insert_initialise = function(elem, tree)
                 else
                 {
                     this.doubleRotateLeft(tree);
+
+                    /*console.log("Preorder of questionDS");
+                    preorder(questionDS);
+                    console.log("Preorder of questionDS - END");*/
                 }
             }
         }
     }
 
 
+
 }
 
-BST.prototype.singleRotateRight = function(tree)
+function insert_initialise(elem, tree)
 {
+
+
+    if (elem.data < tree.data)
+    {
+        if (tree.left == null)
+        {
+            //console.log("came left : " + elem.data);
+            tree.left=elem;
+            elem.parent = tree;
+
+            if (tree.height < tree.left.height + 1)
+            {
+                tree.height = tree.left.height + 1
+            }
+        }
+        else
+        {
+            console.log("came here - " + tree.data + " " + elem.data);
+            tree.left = insert_initialise(elem, tree.left);
+
+
+            if (tree.height < tree.left.height + 1)
+            {
+                tree.height = tree.left.height + 1
+            }
+
+            if(tree.data == 96) {
+                console.log("96 : " + tree.left.height + " : " + tree.right.height);
+            }
+
+            if ((tree.right != null && tree.left.height > tree.right.height + 1) ||
+                (tree.right == null && tree.left.height > 1))
+            {
+                if (elem.data < tree.left.data)
+                {
+                    console.log("SingleRotateRight !!!!!!!");
+                    tree = singleRotateRight(tree);
+                }
+                else
+                {
+                    console.log("DoubleRotateRight !!!!!!!");
+                    tree = doubleRotateRight(tree);
+
+
+                }
+            }
+        }
+    }
+    else if (elem.data == tree.data)
+    {
+        //if(visualise) this.cmd("Delete", elem.graphicID);
+    }
+    else
+    {
+        if (tree.right == null)
+        {
+            tree.right=elem;
+            elem.parent = tree;
+            elem.x = tree.x + BST.WIDTH_DELTA/2;
+            elem.y = tree.y + BST.HEIGHT_DELTA;
+
+
+            if (tree.height < tree.right.height + 1)
+            {
+                tree.height = tree.right.height + 1;
+            }
+
+        }
+        else
+        {
+            this.insert_initialise(elem, tree.right);
+
+            if (tree.height < tree.right.height + 1)
+            {
+                tree.height = tree.right.height + 1;
+            }
+            if ((tree.left != null && tree.right.height > tree.left.height + 1) ||
+                (tree.left == null && tree.right.height > 1))
+            {
+                if (elem.data >= tree.right.data)
+                {
+                    console.log("SingleRotateLeft !!!!!!!");
+                    this.singleRotateLeft(tree);
+                }
+                else
+                {
+                    console.log("Preorder of questionDS");
+                    preorder(questionDS);
+                    console.log("Preorder of questionDS - END");
+
+                    console.log("DoubleRotateLeft !!!!!!!");
+
+                    tree = doubleRotateLeft(tree);
+
+                    console.log("Preorder of questionDS");
+                    preorder(questionDS);
+                    console.log("Preorder of questionDS - END");
+                }
+            }
+        }
+    }
+
+    return tree;
+}
+
+BST.prototype.singleRotateRight = function(tree, visualise)
+{
+    visualise = typeof visualise !== 'undefined' ? visualise : true;
     var B = tree;
     var t3 = B.right;
     var A = tree.left;
@@ -1307,12 +1720,12 @@ BST.prototype.singleRotateRight = function(tree)
 
     if (t2 != null)
     {
-        this.cmd("Disconnect", A.graphicID, t2.graphicID);
-        this.cmd("Connect", B.graphicID, t2.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Disconnect", A.graphicID, t2.graphicID);
+        if(visualise) this.cmd("Connect", B.graphicID, t2.graphicID, BST.LINK_COLOR);
         t2.parent = B;
     }
-    this.cmd("Disconnect", B.graphicID, A.graphicID);
-    this.cmd("Connect", A.graphicID, B.graphicID, BST.LINK_COLOR);
+    if(visualise) this.cmd("Disconnect", B.graphicID, A.graphicID);
+    if(visualise) this.cmd("Connect", A.graphicID, B.graphicID, BST.LINK_COLOR);
     A.parent = B.parent;
     if (this.treeRoot == B)
     {
@@ -1320,8 +1733,8 @@ BST.prototype.singleRotateRight = function(tree)
     }
     else
     {
-        this.cmd("Disconnect", B.parent.graphicID, B.graphicID, BST.LINK_COLOR);
-        this.cmd("Connect", B.parent.graphicID, A.graphicID, BST.LINK_COLOR)
+        if(visualise) this.cmd("Disconnect", B.parent.graphicID, B.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Connect", B.parent.graphicID, A.graphicID, BST.LINK_COLOR)
         if (B.isLeftChild())
         {
             B.parent.left = A;
@@ -1336,13 +1749,53 @@ BST.prototype.singleRotateRight = function(tree)
     B.left = t2;
     this. resetHeight(B);
     this. resetHeight(A);
-    this.resizeTree();
+    if(visualise) this.resizeTree();
+}
+
+function singleRotateRight(tree)
+{
+    var B = tree;
+    var t3 = B.right;
+    var A = tree.left;
+    var t1 = A.left;
+    var t2 = A.right;
+
+
+
+    if (t2 != null)
+    {
+        t2.parent = B;
+    }
+    A.parent = B.parent;
+    if (tree == B)
+    {
+        tree = A;
+    }
+    else
+    {
+        if (B.isLeftChild())
+        {
+            B.parent.left = A;
+        }
+        else
+        {
+            B.parent.right = A;
+        }
+    }
+    A.right = B;
+    B.parent = A;
+    B.left = t2;
+    this. resetHeight(B);
+    this. resetHeight(A);
+
+    return tree;
 }
 
 
 
-BST.prototype.singleRotateLeft = function(tree)
+BST.prototype.singleRotateLeft = function(tree, visualise)
 {
+    visualise = typeof visualise !== 'undefined' ? visualise : true;
     var A = tree;
     var B = tree.right;
     var t1 = A.left;
@@ -1350,17 +1803,17 @@ BST.prototype.singleRotateLeft = function(tree)
     var t3 = B.right;
 
     //this.cmd("SetText", 0, "Single Rotate Left");
-    this.cmd("SetEdgeHighlight", A.graphicID, B.graphicID, 1);
-    this.cmd("Step");
+    if(visualise) this.cmd("SetEdgeHighlight", A.graphicID, B.graphicID, 1);
+    if(visualise) this.cmd("Step");
 
     if (t2 != null)
     {
-        this.cmd("Disconnect", B.graphicID, t2.graphicID);
-        this.cmd("Connect", A.graphicID, t2.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Disconnect", B.graphicID, t2.graphicID);
+        if(visualise) this.cmd("Connect", A.graphicID, t2.graphicID, BST.LINK_COLOR);
         t2.parent = A;
     }
-    this.cmd("Disconnect", A.graphicID, B.graphicID);
-    this.cmd("Connect", B.graphicID, A.graphicID, BST.LINK_COLOR);
+    if(visualise) this.cmd("Disconnect", A.graphicID, B.graphicID);
+    if(visualise) this.cmd("Connect", B.graphicID, A.graphicID, BST.LINK_COLOR);
     B.parent = A.parent;
     if (this.treeRoot == A)
     {
@@ -1368,8 +1821,8 @@ BST.prototype.singleRotateLeft = function(tree)
     }
     else
     {
-        this.cmd("Disconnect", A.parent.graphicID, A.graphicID, BST.LINK_COLOR);
-        this.cmd("Connect", A.parent.graphicID, B.graphicID, BST.LINK_COLOR)
+        if(visualise) this.cmd("Disconnect", A.parent.graphicID, A.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Connect", A.parent.graphicID, B.graphicID, BST.LINK_COLOR)
 
         if (A.isLeftChild())
         {
@@ -1386,7 +1839,44 @@ BST.prototype.singleRotateLeft = function(tree)
     this. resetHeight(A);
     this. resetHeight(B);
 
-    this.resizeTree();
+    if(visualise) this.resizeTree();
+}
+
+function singleRotateLeft(tree)
+{
+    var A = tree;
+    var B = tree.right;
+    var t1 = A.left;
+    var t2 = B.left;
+    var t3 = B.right;
+
+    if (t2 != null)
+    {
+        t2.parent = A;
+    }
+    B.parent = A.parent;
+    if (tree == A)
+    {
+        tree = B;
+    }
+    else
+    {
+        if (A.isLeftChild())
+        {
+            A.parent.left = B;
+        }
+        else
+        {
+            A.parent.right = B;
+        }
+    }
+    B.left = A;
+    A.parent = B;
+    A.right = t2;
+    this. resetHeight(A);
+    this. resetHeight(B);
+
+    return tree;
 }
 
 
@@ -1413,8 +1903,9 @@ BST.prototype.resetHeight = function(tree)
     }
 }
 
-BST.prototype.doubleRotateRight = function(tree)
+BST.prototype.doubleRotateRight = function(tree, visualise)
 {
+    visualise = typeof visualise !== 'undefined' ? visualise : true;
     //this.cmd("SetText", 0, "Double Rotate Right");
     var A = tree.left;
     var B = tree.left.right;
@@ -1424,25 +1915,25 @@ BST.prototype.doubleRotateRight = function(tree)
     var t3 = B.right;
     var t4 = C.right;
 
-    this.cmd("Disconnect", C.graphicID, A.graphicID);
-    this.cmd("Disconnect", A.graphicID, B.graphicID);
-    this.cmd("Connect", C.graphicID, A.graphicID, BST.HIGHLIGHT_LINK_COLOR);
-    this.cmd("Connect", A.graphicID, B.graphicID, BST.HIGHLIGHT_LINK_COLOR);
-    this.cmd("Step");
+    if(visualise) this.cmd("Disconnect", C.graphicID, A.graphicID);
+    if(visualise) this.cmd("Disconnect", A.graphicID, B.graphicID);
+    if(visualise) this.cmd("Connect", C.graphicID, A.graphicID, BST.HIGHLIGHT_LINK_COLOR);
+    if(visualise) this.cmd("Connect", A.graphicID, B.graphicID, BST.HIGHLIGHT_LINK_COLOR);
+    if(visualise) this.cmd("Step");
 
     if (t2 != null)
     {
-        this.cmd("Disconnect",B.graphicID, t2.graphicID);
+        if(visualise) this.cmd("Disconnect",B.graphicID, t2.graphicID);
         t2.parent = A;
         A.right = t2;
-        this.cmd("Connect", A.graphicID, t2.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Connect", A.graphicID, t2.graphicID, BST.LINK_COLOR);
     }
     if (t3 != null)
     {
-        this.cmd("Disconnect",B.graphicID, t3.graphicID);
+        if(visualise) this.cmd("Disconnect",B.graphicID, t3.graphicID);
         t3.parent = C;
         C.left = t2;
-        this.cmd("Connect", C.graphicID, t3.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Connect", C.graphicID, t3.graphicID, BST.LINK_COLOR);
     }
     if (C.parent == null)
     {
@@ -1451,8 +1942,8 @@ BST.prototype.doubleRotateRight = function(tree)
     }
     else
     {
-        this.cmd("Disconnect",C.parent.graphicID, C.graphicID);
-        this.cmd("Connect",C.parent.graphicID, B.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Disconnect",C.parent.graphicID, C.graphicID);
+        if(visualise) this.cmd("Connect",C.parent.graphicID, B.graphicID, BST.LINK_COLOR);
         if (C.isLeftChild())
         {
             C.parent.left = B
@@ -1464,10 +1955,10 @@ BST.prototype.doubleRotateRight = function(tree)
         B.parent = C.parent;
         C.parent = B;
     }
-    this.cmd("Disconnect", C.graphicID, A.graphicID);
-    this.cmd("Disconnect", A.graphicID, B.graphicID);
-    this.cmd("Connect", B.graphicID, A.graphicID, BST.LINK_COLOR);
-    this.cmd("Connect", B.graphicID, C.graphicID, BST.LINK_COLOR);
+    if(visualise) this.cmd("Disconnect", C.graphicID, A.graphicID);
+    if(visualise) this.cmd("Disconnect", A.graphicID, B.graphicID);
+    if(visualise) this.cmd("Connect", B.graphicID, A.graphicID, BST.LINK_COLOR);
+    if(visualise) this.cmd("Connect", B.graphicID, C.graphicID, BST.LINK_COLOR);
     B.left = A;
     A.parent = B;
     B.right=C;
@@ -1478,13 +1969,65 @@ BST.prototype.doubleRotateRight = function(tree)
     this. resetHeight(C);
     this. resetHeight(B);
 
-    this.resizeTree();
-
-
+    if(visualise) this.resizeTree();
 }
 
-BST.prototype.doubleRotateLeft = function(tree)
+function doubleRotateRight(tree)
 {
+
+    //this.cmd("SetText", 0, "Double Rotate Right");
+    var A = tree.left;
+    var B = tree.left.right;
+    var C = tree;
+    var t1 = A.left;
+    var t2 = B.left;
+    var t3 = B.right;
+    var t4 = C.right;
+
+    if (t2 != null)
+    {
+        t2.parent = A;
+        A.right = t2;
+    }
+    if (t3 != null)
+    {
+        t3.parent = C;
+        C.left = t2;
+    }
+    if (C.parent == null)
+    {
+        B.parent = null;
+        tree = B;
+    }
+    else
+    {
+        if (C.isLeftChild())
+        {
+            C.parent.left = B
+        }
+        else
+        {
+            C.parent.right = B;
+        }
+        B.parent = C.parent;
+        C.parent = B;
+    }
+    B.left = A;
+    A.parent = B;
+    B.right=C;
+    C.parent=B;
+    A.right=t2;
+    C.left = t3;
+    currentAlg.resetHeight(A);
+    currentAlg.resetHeight(C);
+    currentAlg.resetHeight(B);
+
+    return tree;
+}
+
+BST.prototype.doubleRotateLeft = function(tree, visualise)
+{
+    visualise = typeof visualise !== 'undefined' ? visualise : true;
     //this.cmd("SetText", 0, "Double Rotate Left");
     var A = tree;
     var B = tree.right.left;
@@ -1494,26 +2037,30 @@ BST.prototype.doubleRotateLeft = function(tree)
     var t3 = B.right;
     var t4 = C.right;
 
-    this.cmd("Disconnect", A.graphicID, C.graphicID);
-    this.cmd("Disconnect", C.graphicID, B.graphicID);
-    this.cmd("Connect", A.graphicID, C.graphicID, BST.HIGHLIGHT_LINK_COLOR);
-    this.cmd("Connect", C.graphicID, B.graphicID, BST.HIGHLIGHT_LINK_COLOR);
-    this.cmd("Step");
+    if(visualise) this.cmd("Disconnect", A.graphicID, C.graphicID);
+    if(visualise) this.cmd("Disconnect", C.graphicID, B.graphicID);
+    if(visualise) this.cmd("Connect", A.graphicID, C.graphicID, BST.HIGHLIGHT_LINK_COLOR);
+    if(visualise) this.cmd("Connect", C.graphicID, B.graphicID, BST.HIGHLIGHT_LINK_COLOR);
+    if(visualise) this.cmd("Step");
 
     if (t2 != null)
     {
-        this.cmd("Disconnect",B.graphicID, t2.graphicID);
+        if(visualise) this.cmd("Disconnect",B.graphicID, t2.graphicID);
         t2.parent = A;
         A.right = t2;
-        this.cmd("Connect", A.graphicID, t2.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Connect", A.graphicID, t2.graphicID, BST.LINK_COLOR);
     }
     if (t3 != null)
     {
-        this.cmd("Disconnect",B.graphicID, t3.graphicID);
+        if(visualise) this.cmd("Disconnect",B.graphicID, t3.graphicID);
         t3.parent = C;
         C.left = t2;
-        this.cmd("Connect", C.graphicID, t3.graphicID, BST.LINK_COLOR);
+        if(visualise) this.cmd("Connect", C.graphicID, t3.graphicID, BST.LINK_COLOR);
     }
+
+    console.log("Preorder of questionDS");
+    preorder(questionDS);
+    console.log("Preorder of questionDS - END - DOUBLERLeft");
 
 
     if (A.parent == null)
@@ -1536,6 +2083,11 @@ BST.prototype.doubleRotateLeft = function(tree)
         B.parent = A.parent;
         A.parent = B;
     }
+
+    console.log("Preorder of questionDS");
+    preorder(questionDS);
+    console.log("Preorder of questionDS - END - DOUBLERLeft");
+
     this.cmd("Disconnect", A.graphicID, C.graphicID);
     this.cmd("Disconnect", C.graphicID, B.graphicID);
     this.cmd("Connect", B.graphicID, A.graphicID, BST.LINK_COLOR);
@@ -1550,8 +2102,78 @@ BST.prototype.doubleRotateLeft = function(tree)
     this. resetHeight(C);
     this. resetHeight(B);
 
-    this.resizeTree();
+    if(visualise) this.resizeTree();
+
+    console.log("Preorder of questionDS");
+    preorder(questionDS);
+    console.log("Preorder of questionDS - END - DOUBLERLeft");
+}
+
+function doubleRotateLeft(tree)
+{
+    //this.cmd("SetText", 0, "Double Rotate Left");
+    var A = tree;
+    var B = tree.right.left;
+    var C = tree.right;
+    var t1 = A.left;
+    var t2 = B.left;
+    var t3 = B.right;
+    var t4 = C.right;
+
+    if (t2 != null)
+    {
+        t2.parent = A;
+        A.right = t2;
+    }
+    if (t3 != null)
+    {
+        t3.parent = C;
+        C.left = t2;
+    }
+
+    console.log("Preorder of questionDS");
+    preorder(questionDS);
+    console.log("Preorder of questionDS - END - DOUBLERLeft");
 
 
+    if (A.parent == null)
+    {
+        B.parent = null;
+        tree = B;
+    }
+    else
+    {
+        if (A.isLeftChild())
+        {
+            A.parent.left = B
+        }
+        else
+        {
+            A.parent.right = B;
+        }
+        B.parent = A.parent;
+        A.parent = B;
+    }
+
+    console.log("Preorder of questionDS");
+    preorder(questionDS);
+    console.log("Preorder of questionDS - END - DOUBLERLeft");
+
+    B.left = A;
+    A.parent = B;
+    B.right=C;
+    C.parent=B;
+    A.right=t2;
+    C.left = t3;
+    currentAlg.resetHeight(A);
+    currentAlg.resetHeight(C);
+    currentAlg.resetHeight(B);
+
+
+    console.log("Preorder of questionDS");
+    preorder(questionDS);
+    console.log("Preorder of questionDS - END - DOUBLERLeft");
+
+    return tree;
 }
 

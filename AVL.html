@@ -225,15 +225,23 @@
                     <button id="Delete" href onclick="deleteElementBST(null);" style="width:100%">Delete Present Node</button>
                     <script>
                         function deleteElementBST(replacementNode){
-                            currentAlg.deleteElem = true;
+
                             currentAlg.addStep("D");
 //                            var replacementNode = currentAlg.markednode;
                             document.getElementById("menuSimple").style.display = "none";
 
-                            if(replacementNode == null) {
-                                alert("Click on a node to replace this node.");
-                                return;
+
+
+                            // if the node to be deleted is not a leaf, we need a replacement node
+                            if(!(currentHighlightNode.left==null && currentHighlightNode.right==null)) {
+                                // replacementNode is null here (deleteElementBST is always called with null as argument)
+                                if(replacementNode == null) {
+                                    currentAlg.deleteElem = true;
+                                    alert("Click on a node to replace this node.");
+                                    return;
+                                }
                             }
+
 
                             /*if(!(currentHighlightNode.left==null && currentHighlightNode.right==null)) {
                                 currentAlg.deleteElem = true;
@@ -254,12 +262,12 @@
                             currentAlg.animationManager.skipForward();
                             currentAlg.animationManager.clearHistory();
 
-                            currentAlg.markednode = null;
+                            // currentAlg.markednode = null;
 
                         }
 
                         function afterNodeSelected(){
-                            var replacementNode = null;
+                            // replacementNode = null;
 //                                    do {
 //                                        var numberToReplace = BSTUtils.inputNumber("Enter node number to replace next deleted node(Enter -1 for null value)");
 //                                        replacementNode = currentAlg.getNode(numberToReplace);
@@ -350,37 +358,42 @@
         <b><p>Questions on Insert Operation</p></b>
         <form action="">
 
-            <input type="radio" name="radio1" value="i1" checked="checked">Insert 44 to the AVL tree.<br>
+            <input type="radio" name="radio1" value="i1" checked="checked">Insert 82 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri1" readonly></textarea>
+            <!--Correct Answer: <textarea class="scrollabletextbox" id="correct_answeri1" ></textarea>-->
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
 
-            <input type="radio" name="radio1" value="i2">Insert 56 to the AVL tree.<br>
+            <input type="radio" name="radio1" value="i2">Insert 92 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri2" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
-            <input type="radio" name="radio1" value="i3">Insert 68 to the AVL tree.<br>
+            <input type="radio" name="radio1" value="i3">Insert 60, 64, 70, 75 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri3" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
-
-            <input type="radio" name="radio1" value="i4">Mark the parent node of the newly added node?<br>
+            <input type="radio" name="radio1" value="i4">Insert 68 to the AVL tree.<br>
             Output: <textarea class="scrollabletextbox" id="answeri4" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
-            <br><input type="radio" name="radio1" value="i5">What is the height of the newly formed tree?<br>
-            Output: <textarea class="scrollabletextbox" id="answeri5"></textarea>
+            <input type="radio" name="radio1" value="i5">Mark the parent node of the newly added node?<br>
+            Output: <textarea class="scrollabletextbox" id="answeri5" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
-            <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
+            <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br><br>
 
-            <br><input type="radio" name="radio1" value="i6">Insert nodes to make a full binary tree.<br>
+            <br><input type="radio" name="radio1" value="i6">What is the height of the newly formed AVL tree?<br>
             Output: <textarea class="scrollabletextbox" id="answeri6"></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
+
+            <!--<br><input type="radio" name="radio1" value="i6">Insert nodes to make a full binary tree.<br>
+            Output: <textarea class="scrollabletextbox" id="answeri6"></textarea>
+            <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
+            <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>-->
         </form>
     </div>
 
@@ -388,30 +401,30 @@
         <b><p>Questions on Delete Operation</p></b>
         <form action="">
 
-            <input type="radio" name="radio2" value="d1" checked="checked">Delete the root of the tree<br>
+            <input type="radio" name="radio2" value="d1" checked="checked">Delete the root of the tree by replacing it with a node from its left subtree.<br>
             Output: <textarea class="scrollabletextbox" id="answerd1" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
 
-            <input type="radio" name="radio2" value="d2">Delete the 3rd largest value in the remaining tree<br>
+            <input type="radio" name="radio2" value="d2">Delete the 5th largest value in the remaining tree<br>
             Output: <textarea class="scrollabletextbox" id="answerd2" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
-            <input type="radio" name="radio2" value="d3">Mark the child node(s), if any, of the node which replaced the deleted node in (2).<br>
-            Output: <textarea class="scrollabletextbox" id="answerd3" readonly></textarea>
+            <input type="radio" name="radio2" value="d3">What is the height of the newly formed tree?.<br>
+            Output: <textarea class="scrollabletextbox" id="answerd3"></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
 
-            <input type="radio" name="radio2" value="d4">What is the height of the newly formed tree?<br>
+            <input type="radio" name="radio2" value="d4">Delete the current leaf nodes in the left subtree of the root.<br>
             Output: <textarea class="scrollabletextbox" id="answerd4" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
-            <input type="radio" name="radio2" value="d5">Delete necessary nodes to make a full binary tree.<br>
-            Output: <textarea class="scrollabletextbox" id="answerd5" readonly></textarea>
+            <input type="radio" name="radio2" value="d5">What is the height of the newly formed tree?<br>
+            Output: <textarea class="scrollabletextbox" id="answerd5"></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
@@ -439,7 +452,7 @@
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
 
 
-            <input type="radio" name="radio4" value="m4">Mark the lowest common ancestor of the first two leaf nodes(from left)?<br>
+            <input type="radio" name="radio3" value="m4">Mark the lowest common ancestor of the first two leaf nodes(from left)?<br>
             Output: <textarea class="scrollabletextbox" id="answerm4" readonly></textarea>
             <input type ="button" onclick="currentAlg.submitAnswer()" value="Submit" />
             <input type ="button" onclick="currentAlg.resetAnswer()" value="Reset" /><br>
